@@ -1,0 +1,2 @@
+/^([\w-]*)@mail.([0-9]+).nasa$/ $1@$2.nasa
+/^cool-TA@([\w-.]*)$/ supercooool-TA@$1
