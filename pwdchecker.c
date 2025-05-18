@@ -1,10 +1,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <lber.h>
-#include <ldap.h>
-#include <slap.h>
 
-int check_password(const char *pPasswd, struct berval *pErrmsg, Entry *pEntry, struct berval *pArg) {
+// pEntry 改用 void * 是合法的 workaround
+int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, struct berval *pArg) {
     int has_upper = 0, has_lower = 0, has_digit = 0, has_special = 0;
     size_t len = strlen(pPasswd);
 
