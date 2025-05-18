@@ -14,10 +14,11 @@ int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, st
     }
 
     for (size_t i = 0; i < len; ++i) {
-        if (isupper((unsigned char)pPasswd[i])) has_upper = 1;
-        else if (islower((unsigned char)pPasswd[i])) has_lower = 1;
-        else if (isdigit((unsigned char)pPasswd[i])) has_digit = 1;
-        else has_special = 1;
+        unsigned char ch = (unsigned char)pPasswd[i];
+        if (isupper(ch)) has_upper = 1;
+        if (islower(ch)) has_lower = 1;
+        if (isdigit(ch)) has_digit = 1;
+        if (!isupper(ch) && !islower(ch) && !isdigit(ch)) has_special = 1;
     }
 
     int classes = has_upper + has_lower + has_digit + has_special;
