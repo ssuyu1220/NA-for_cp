@@ -27,3 +27,7 @@ int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, st
 
     return 0;
 }
+
+int init_module(int argc, char *argv[]) {
+    return 0;
+}
