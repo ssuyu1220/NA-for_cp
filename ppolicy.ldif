@@ -1,0 +1,4 @@
+dn: cn=custom,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: custom
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1 NAME 'olcPPolicyCheckModule' DESC 'Path to custom password policy module' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
