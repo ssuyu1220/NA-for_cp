@@ -1,17 +1,12 @@
-#include <lber.h>
 #include <string.h>
 #include <ctype.h>
+#include <lber.h>
 
-int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, struct berval *pArg) {
+int check_password(const char *pPasswd, void *pEntry, struct berval *pErrmsg, struct berval *pArg) {
     int has_upper = 0, has_lower = 0, has_digit = 0, has_special = 0;
     size_t len = strlen(pPasswd);
 
-    if (len < 8) {
-        static const char *msg = "Password must be at least 8 characters long";
-        pErrmsg->bv_val = (char *)msg;
-        pErrmsg->bv_len = strlen(msg);
-        return 1;
-    }
+    static const char *msg_class = "Password must include at least 3 of: upper, lower, digit, special characters";
 
     for (size_t i = 0; i < len; ++i) {
         unsigned char ch = (unsigned char)pPasswd[i];
@@ -23,9 +18,10 @@ int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, st
 
     int classes = has_upper + has_lower + has_digit + has_special;
     if (classes < 3) {
-        static const char *msg = "Password must include at least 3 of: upper, lower, digit, special characters";
-        pErrmsg->bv_val = (char *)msg;
-        pErrmsg->bv_len = strlen(msg);
+        if (pErrmsg) {
+            pErrmsg->bv_val = (char *)msg_class;
+            pErrmsg->bv_len = strlen(msg_class);
+        }
         return 1;
     }
 
