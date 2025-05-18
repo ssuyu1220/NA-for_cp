@@ -1,14 +1,15 @@
+#include <lber.h>
 #include <string.h>
 #include <ctype.h>
-#include <lber.h>
 
-// pEntry 改用 void * 是合法的 workaround
 int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, struct berval *pArg) {
     int has_upper = 0, has_lower = 0, has_digit = 0, has_special = 0;
     size_t len = strlen(pPasswd);
 
     if (len < 8) {
-        ber_str2bv("Password must be at least 8 characters long", 0, 0, pErrmsg);
+        static const char *msg = "Password must be at least 8 characters long";
+        pErrmsg->bv_val = (char *)msg;
+        pErrmsg->bv_len = strlen(msg);
         return 1;
     }
 
@@ -21,7 +22,9 @@ int check_password(const char *pPasswd, struct berval *pErrmsg, void *pEntry, st
 
     int classes = has_upper + has_lower + has_digit + has_special;
     if (classes < 3) {
-        ber_str2bv("Password must include at least 3 of: upper, lower, digit, special characters", 0, 0, pErrmsg);
+        static const char *msg = "Password must include at least 3 of: upper, lower, digit, special characters";
+        pErrmsg->bv_val = (char *)msg;
+        pErrmsg->bv_len = strlen(msg);
         return 1;
     }
 
