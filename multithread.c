@@ -38,40 +38,43 @@ void *matrix_multiply(void *arg) {
 
 int main() {
     // implement data of matrix_a
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < K; j++)
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < K; j++) {
             matrix_a[i][j] = i + j;
-
+        }
+    }
     // implement data of matrix_b
-    for (int i = 0; i < K; i++)
-        for (int j = 0; j < N; j++)
+    for (int i = 0; i < K; i++) {
+        for (int j = 0; j < N; j++) {
             matrix_b[i][j] = abs(i - j);
+        }
+    }
+
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC, &start); // start timer
 
     pthread_t threads[NUM_THREADS];
     ThreadArg args[NUM_THREADS];
-
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
     int rows_num = M / NUM_THREADS;
 
+    // create threads
     for (int i = 0; i < NUM_THREADS; i++) {
         args[i].start_row = i * rows_num;
         args[i].end_row = (i + 1) * rows_num;
+        args[i].id = i;
         pthread_create(&threads[i], NULL, matrix_multiply, &args[i]);
     }
-
-    // Wait all of the threads complete
+    // wait all of the threads complete
     for (int i = 0; i < NUM_THREADS; ++i)
         pthread_join(threads[i], NULL);
 
-    // write result to matrix_c.txt
-    FILE *file = fopen("matrix_c.txt", "w");
+    // open file
+    FILE *file = fopen("multithread_matrix_c.txt", "w");
     if (file == NULL) {
         perror("Failed to open file");
         exit(1);
     }
-
+    // write result to multithread_matrix_c.txt
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             fprintf(file, "%d ", matrix_c[i][j]);
@@ -79,12 +82,13 @@ int main() {
         fprintf(file, "\n");
     }
     fclose(file);
-    printf("matrix_c has been written to matrix_c.txt\n");
-    
-    clock_gettime(CLOCK_MONOTONIC, &end);
+    printf("matrix_c has been written to multithread_matrix_c.txt\n");
+
+    clock_gettime(CLOCK_MONOTONIC, &end); // end timer
     double dur =
         (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    printf("Multiplication done. Total time: %lf seconds\n", dur);
+    printf("total time of matrix multiplication (multithread): %lf secs\n",
+           dur);
 
     return 0;
 }
